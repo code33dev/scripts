@@ -84,7 +84,7 @@ cd ..
 cd Chipmunk2D
 mkdir build
 cd build
-cmake  -DINSTALL_STATIC=ON -DBUILD_SHARED=OFF -BUILD_STATIC=ON -DBUILD_DEMOS=OFF -DCMAKE_INSTALL_PREFIX=../../sdk ..
+cmake  -DCMAKE_INSTALL_PREFIX=../../sdk ..
 make -j 16
 make install
 cd ..
