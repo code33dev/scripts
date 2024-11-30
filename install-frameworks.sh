@@ -1,7 +1,6 @@
 sudo update-alternatives --set gcc /usr/bin/gcc-$1
 sudo update-alternatives --set g++ /usr/bin/g++-$1
 rm -rf sdk_old
-mv sdk sdk_old
 rm -rf sdk
 rm -rf frameworks
 mkdir frameworks
@@ -283,9 +282,12 @@ find . -type d ! -name "shared" ! -name "static" -exec rm -rf {} +
 rm -rf shared
 gccver=$(gcc --version | grep gcc | cut -d' ' -f3 | cut -d'-' -f1)
 mv /mnt/development/frameworks/sdk /mnt/development
-cd /mnt/development/sdk
+cd /mnt/development
 echo 'Compressing this fucking shit!!'
-timestamp=$(date +%Y-%m-%d_%H-%M-%S) && tar -cJf sdk_gcc$1_$timestamp.tar.xz .
+timestamp=$(date +%Y-%m-%d_%H-%M-%S) && tar -C sdk -cJf sdk_gcc$1_$timestamp.tar.xz .
+#tar -C /mnt/development/sdk -cf sdk.tar.xz --xz .
 echo 'Compressing this fucking shit finished!!'
-mv *.tar.xz /mnt/development/sandbox
+mv sdk*.tar.xz /mnt/development/sandbox
 
+sudo update-alternatives --set gcc /usr/bin/gcc-14
+sudo update-alternatives --set g++ /usr/bin/g++-14
