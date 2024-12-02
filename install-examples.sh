@@ -12,7 +12,7 @@ git clone --recursive https://github.com/opengl-tutorials/ogl.git opengl-tutoria
 git clone --recursive https://github.com/JoeyDeVries/LearnOpenGL.git learn-opengl
 git clone --recursive https://github.com/emeiri/ogldev.git ogldev
 git clone --recursive https://github.com/PacktPublishing/OpenGL-4-Shading-Language-Cookbook-Third-Edition.git opengl-shading-book
-git clone --recursive https://github.com/mmp/pbrt-v4 
+#git clone --recursive https://github.com/mmp/pbrt-v4 
 git clone --recursive https://github.com/SaschaWillems/Vulkan.git vulkan-examples
 git clone --recursive https://github.com/openglsuperbible/sb7code.git super-bible-7
 #=======================================================================
@@ -101,11 +101,11 @@ cd ..
 #=======================================================================
 #PBRT4!
 #=======================================================================
-cd pbrt-v4
-mkdir build
-cd build
-cmake -DPBRT_BUILD_GPU_RENDERER=ON ..
-make -j 16
-cd ..
-cd ..
+#cd pbrt-v4
+#mkdir build
+#cd build
+#cmake -DPBRT_BUILD_GPU_RENDERER=ON ..
+#make -j 16
+#cd ..
+#cd ..
 sudo update-alternatives --set gcc /usr/bin/gcc-14
