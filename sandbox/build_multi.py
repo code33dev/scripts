@@ -2,6 +2,7 @@ import os
 import subprocess
 import shutil
 from datetime import datetime
+import multiprocessing
 
 def run_command(command, cwd=None):
     """Run a shell command and exit on failure."""
@@ -145,66 +146,56 @@ def build_all_libraries():
         "SDL_net": ["-DINSTALL_STATIC=ON", "-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"]
     }
 
-    # Iterate through each directory in the frameworks folder and build the libraries
-    for directory in os.listdir(frameworks_dir):
-        lib_path = os.path.join(frameworks_dir, directory)
-        if os.path.isdir(lib_path):
-            # Get the name of the library and use it to get the correct cmake arguments
-            lib_name = directory
-            if lib_name in cmake_args_map:
-                print(f"Building {lib_name}...")
-                build_library(lib_path, cmake_args_map[lib_name], lib_name)
+    # Create a pool of worker processes to build the libraries concurrently
+    with multiprocessing.Pool(processes=multiprocessing.cpu_count()) as pool:
+        pool.starmap(build_library, [(os.path.join(frameworks_dir, directory), cmake_args_map[directory], directory) 
+                                      for directory in os.listdir(frameworks_dir) 
+                                      if os.path.isdir(os.path.join(frameworks_dir, directory)) 
+                                      and directory in cmake_args_map])
 
     print("Building GLEW...")
     install_glew()  # Call the custom GLEW installation function
-
 
     # Build ImGui separately
     print("Building ImGui...")
     install_imgui()
 
-
-
 def install_imgui():
     os.system('sh ./scripts/imgui.sh')
-        
-
-
 
 def post_build_cleanup():
     """Perform post-build cleanup and organize directories."""
-    run_command('cp -R frameworks/sdk .')
-    
+    sdk_lib = os.path.join("sdk", "lib")
+    os.makedirs(os.path.join(sdk_lib, "shared"), exist_ok=True)
+
+    for item in os.listdir(sdk_lib):
+        if item.endswith(".so") or ".so." in item:
+            shutil.move(os.path.join(sdk_lib, item), os.path.join(sdk_lib, "shared"))
+
+    # Optionally remove intermediate files
+    for root, dirs, _ in os.walk("sdk"):
+        for dir_name in dirs:
+            if dir_name == "build":
+                shutil.rmtree(os.path.join(root, dir_name), ignore_errors=True)
 
 def compress_sdk(version):
     """Compress the SDK directory into a .tar.xz file."""
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     tar_name = f"sdk_gcc{version}_{timestamp}.tar.xz"
-    print(f"SDK is being compressed: {tar_name}")
-    run_command(f"tar -C sdk -cJf {tar_name} .")  
+    run_command(f"tar -C sdk -cJf {tar_name} .")
     shutil.move(tar_name, "sandbox")
     print(f"SDK compressed and moved to sandbox: {tar_name}")
 
-def build_sdk_artifact(version):
-    gcc_version = version #input("Enter the GCC version to use (e.g., 14): ").strip()
-    set_compiler_version(gcc_version)
+def main():
+    gcc_version = 14  #input("Enter the GCC version to use (e.g., 14): ").strip()
     run_command('rm -rf sdk frameworks')
+    set_compiler_version(gcc_version)
     clean_and_prepare_directories()
-    build_all_libraries()        
+    build_all_libraries()
     post_build_cleanup()
     compress_sdk(gcc_version)
-    set_compiler_version("14")
-    print("Build process complete.")
-    
 
-def main():
-    build_sdk_artifact(9)
-    build_sdk_artifact(10)
-    build_sdk_artifact(11)
-    build_sdk_artifact(12)
-    build_sdk_artifact(13)
-    build_sdk_artifact(14)
-    build_sdk_artifact(15)
+    print("Build process complete.")
 
 if __name__ == "__main__":
     main()
