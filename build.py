@@ -116,9 +116,10 @@ def build_all_libraries():
     """Build all libraries found in the frameworks folder."""
     frameworks_dir = "frameworks"
     cmake_args_map = {
+        "zlib": ["-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "SOIL2": ["-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "boost": ["-DBOOST_RUNTIME_LINK=ON", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
-        "assimp": ["-DBUILD_SHARED_LIBS=OFF", "-DASSIMP_BUILD_TESTS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
+        "assimp": ["-DASSIMP_BUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF", "-DASSIMP_BUILD_TESTS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "glfw": ["-DGLFW_BUILD_TESTS=OFF", "-DGLFW_BUILD_EXAMPLES=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "box2d": ["-DBOX2D_SAMPLES=OFF -DBOX2D_BENCHMARKS=OFF -DBOX2D_DOCS=OFF -DCMAKE_INSTALL_PREFIX=../../sdk"],
         "bullet": ["-DBUILD_SHARED_LIBS=OFF", "-DBUILD_UNIT_TESTS=OFF", "-DBUILD_BULLET2_DEMOS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
@@ -137,7 +138,7 @@ def build_all_libraries():
             "-DCMAKE_INSTALL_PREFIX=../../sdk"
         ],
         "gli": ["-DGLI_TEST_ENABLE=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
-        "freetype": ["-DBUILD_SHARED_LIBS=false", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
+        "freetype": ["-DWITH_HARFBUZZ=ON -DWITH_BROTLI=ON -DWITH_BZIP2=ON -DBUILD_SHARED_LIBS=false", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "SDL": ["-DINSTALL_STATIC=ON", "-DBUILD_SHARED=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "SDL_image": ["-DINSTALL_STATIC=ON", "-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
         "SDL_mixer": ["-DINSTALL_STATIC=ON", "-DBUILD_SHARED_LIBS=OFF", "-DCMAKE_INSTALL_PREFIX=../../sdk"],
@@ -198,13 +199,13 @@ def build_sdk_artifact(version):
     
 
 def main():
-    build_sdk_artifact(9)
-    build_sdk_artifact(10)
-    build_sdk_artifact(11)
-    build_sdk_artifact(12)
-    build_sdk_artifact(13)
+    # build_sdk_artifact(9)
+    # build_sdk_artifact(10)
+    # build_sdk_artifact(11)
+    # build_sdk_artifact(12)
+    # build_sdk_artifact(13)
+    # build_sdk_artifact(14)
     build_sdk_artifact(14)
-    build_sdk_artifact(15)
 
 if __name__ == "__main__":
     main()
