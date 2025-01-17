@@ -75,11 +75,9 @@ cd ..
 # Brotli
 cd brotli
 mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=../../sdk .. 
+cmake -DBUILD_SHARED_LIBS=OFF  -DCMAKE_INSTALL_PREFIX=../../sdk .. 
 make -j$(nproc)
 make install
-cp -r ../c/include/brotli ../../sdk/include/
-cp libbrotlidec.a libbrotlienc.a libbrotlicommon.a ../../sdk/lib/
 cd ../../
 
 
@@ -88,7 +86,7 @@ cd harfbuzz
 mkdir build 
 cd build
 cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=../../sdk .. 
-make -16
+make -j 16
 make install
 cd ..
 cd ..
@@ -99,9 +97,51 @@ cd ..
 cd bzip2
 mkdir build
 cd build
+cmake -DENABLE_STATIC_LIB=ON -DENABLE_SHARED_LIB=OFF -DCMAKE_INSTALL_PREFIX=/usr .. 
+make j 16
+sudo make install
+sudo cp /usr/lib/x86_64-linux-gnu/libbz2_static.a /usr/lib/x86_64-linux-gnu/libbz2.a
 cmake -DENABLE_STATIC_LIB=ON -DENABLE_SHARED_LIB=OFF -DCMAKE_INSTALL_PREFIX=../../sdk .. 
 make 
+make install
+cp ../../sdk/lib/libbz2_static.a ../../sdk/lib/libbz2.a
+cd ..
+cd ..
+
+cd woff2
+mkdir build
+cd build
+cmake -DBUILD_SHARED_LIBS=OFF  -DCMAKE_INSTALL_PREFIX=../../sdk ..
+make -j 16
 make install
 cd ..
 cd ..
 
+
+
+
+cd freetype
+mkdir build
+cd build
+
+cmake \
+  -D FT_REQUIRE_ZLIB=TRUE \
+  -D FT_REQUIRE_BZIP2=TRUE \
+  -D FT_REQUIRE_PNG=TRUE \
+  -D FT_REQUIRE_HARFBUZZ=TRUE \
+  -D FT_REQUIRE_BROTLI=TRUE \
+  -D BUILD_SHARED_LIBS=OFF \
+  -D CMAKE_INSTALL_PREFIX=../../sdk \
+  -D CMAKE_C_FLAGS="-static" \
+  -DZLIB_LIBRARY=../../sdk/lib/libz.a \
+  -DZLIB_INCLUDE_DIR=../../sdk/include/ \
+  -DBZIP2_LIBRARIES=../../sdk/lib/libbz2.a \
+  -DBZIP2_INCLUDE_DIR=../../sdk/include/ \
+  -DBROTLIDEC_LIBRARIES="../../sdk/lib/libbrotlidec.a;../../sdk/lib/libbrotlicommon.a;../../sdk/lib/libbrotlienc.a" \
+  -DBROTLIDEC_INCLUDE_DIR=../../sdk/include/brotli \
+  -DHARFBUZZ_LIBRARIES=../../sdk/lib/libharfbuzz.a \
+  -DHARFBUZZ_INCLUDE_DIRS=../../sdk/include/harfbuzz  ..
+make -j 16
+make install
+cd ..
+cd ..
