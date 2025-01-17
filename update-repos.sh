@@ -5,6 +5,10 @@ else
     echo "Directory does not exist."
     mkdir repos
     cd repos
+    git clone --recursive https://github.com/google/brotli.git
+    git clone --recursive https://github.com/harfbuzz/harfbuzz.git
+    git clone --recursive https://gitlab.com/bzip2/bzip2.git
+    git clone --recursive https://github.com/madler/zlib.git
     git clone --recursive https://github.com/SpartanJ/SOIL2.git 
     git clone --recursive https://github.com/boostorg/boost.git 
     git clone --recursive https://github.com/assimp/assimp.git
