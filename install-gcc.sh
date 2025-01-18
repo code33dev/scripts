@@ -1,9 +1,12 @@
-# git clone --recursive https://github.com/gcc-mirror/gcc.git gcc-$1
+export CC="ccache gcc"
+export CXX="ccache g++"
+export MAKEINFO=/bin/true
+git clone --recursive https://github.com/gcc-mirror/gcc.git gcc-$1
 cd gcc-$1
-# git fetch origin
-# git clean -fd
-# git reset --hard origin
-# contrib/download_prerequisites
+git fetch origin
+git clean -fd
+git reset --hard origin
+contrib/download_prerequisites
 rm -rf build
 mkdir build
 cd build
