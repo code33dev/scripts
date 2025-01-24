@@ -101,8 +101,9 @@ cmake -DENABLE_STATIC_LIB=ON -DENABLE_SHARED_LIB=OFF -DCMAKE_INSTALL_PREFIX=/usr
 make j 16
 sudo make install
 sudo cp /usr/lib/x86_64-linux-gnu/libbz2_static.a /usr/lib/x86_64-linux-gnu/libbz2.a
+rm -rf *
 cmake -DENABLE_STATIC_LIB=ON -DENABLE_SHARED_LIB=OFF -DCMAKE_INSTALL_PREFIX=../../sdk .. 
-make 
+make -j 16
 make install
 cp ../../sdk/lib/libbz2_static.a ../../sdk/lib/libbz2.a
 cd ..
@@ -117,13 +118,9 @@ make install
 cd ..
 cd ..
 
-
-
-
 cd freetype
 mkdir build
 cd build
-
 cmake \
   -D FT_REQUIRE_ZLIB=TRUE \
   -D FT_REQUIRE_BZIP2=TRUE \
@@ -132,7 +129,6 @@ cmake \
   -D FT_REQUIRE_BROTLI=TRUE \
   -D BUILD_SHARED_LIBS=OFF \
   -D CMAKE_INSTALL_PREFIX=../../sdk \
-  -D CMAKE_C_FLAGS="-static" \
   -DZLIB_LIBRARY=../../sdk/lib/libz.a \
   -DZLIB_INCLUDE_DIR=../../sdk/include/ \
   -DBZIP2_LIBRARIES=../../sdk/lib/libbz2.a \
@@ -145,3 +141,7 @@ make -j 16
 make install
 cd ..
 cd ..
+
+mkdir sdk/include/stb
+cp -R stb/*.h* sdk/include/stb
+cp -R stb/*.c* sdk/include/stb

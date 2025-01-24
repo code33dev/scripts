@@ -32,6 +32,9 @@ repos = [
 # Add each repository to the git safe directory list
 for repo in repos:
     subprocess.run(["git", "config", "--global", "--add", "safe.directory", repo], check=True)
+    #subprocess.run(["git", "fetch", "origin", repo], check=True)
+    subprocess.run(["git", "clean", "-fd", repo], check=True)
+    #subprocess.run(["git", "reset", "--hard origin", repo], check=True)
     print(f"Added {repo} to git safe directory")
 
 print("All repositories have been added to Git's safe directory configuration.")
